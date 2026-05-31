@@ -4,7 +4,7 @@ Status: Stage B applied. The actual model consolidates foundation controls into 
 
 ## Source Inputs
 
-- BR: `examples/property-intelligence/solutions/001_Property Intelligence Platform/input/BR Property Intelligence Platform.md`
+- BR: `solutions/001_Property Intelligence Platform/input/BR Property Intelligence Platform.md`
 - Current model inspected: `model/workspace.c4`, `model/common.c4`
 - Current model finding: no existing Property Intelligence, Data and AI, GCP foundation, stewardship, enrichment, or BigQuery analytics elements were found in the root model.
 

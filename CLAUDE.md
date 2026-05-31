@@ -54,7 +54,8 @@ aac-forge/
 │   ├── SAD-template.md
 │   └── REVIEW-template.md
 ├── examples/
-│   └── order-management/            # Real-world enterprise domain
+│   └── order-management/            # Tutorial/demo/reference domain only
+├── solutions/                        # Real architecture change packages for root model
 ├── tests/                            # Golden-file tests + smoke test
 └── .github/workflows/                # CI/CD
 ```
@@ -119,6 +120,10 @@ Use `docs/reference/visual-notation.md` as the canonical lookup for diagram colo
 borders, shapes, icons, and relationship styling. Colors and borders must carry
 architecture meaning such as ownership zone, sensitivity, lifecycle status, publication
 path, certainty, or boundary semantics.
+
+Real architecture work belongs in root `solutions/` and root `model/`. The `examples/`
+tree is reserved for tutorial/demo/reference material and must not be auto-selected for
+production architecture generation.
 
 ### Modular Files
 

@@ -147,7 +147,7 @@ BR Document
 
 | Scope | Path | Example |
 | --- | --- | --- |
-| **Solution decisions** | `<solution>/decisions/` | `examples/order-management/solutions/002_.../decisions/ADR-002-0001-kafka-vs-rest.md` |
+| **Solution decisions** | `<solution>/decisions/` | `solutions/002_.../decisions/ADR-002-0001-kafka-vs-rest.md` |
 | **Repo/tooling decisions** | `docs/adr/` | `docs/adr/ADR-0001-use-likec4-over-structurizr.md` |
 
 Solution ADRs are architecture decisions made while designing a solution. They live with

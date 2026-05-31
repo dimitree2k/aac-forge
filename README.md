@@ -91,9 +91,11 @@ aac-forge/
 │   └── REVIEW-template.md            # 5-role review report template
 │
 ├── examples/
-│   └── order-management/             # Real-world enterprise domain
+│   └── order-management/             # Tutorial/demo/reference domain only
 │       ├── model/                    # 3 domains: customer-facing, core-services, integrations
 │       └── solutions/001_.../        # BR + SAD — Automated Order Fulfillment
+├── solutions/                        # Real architecture change packages for the root model
+│   └── 001_.../                      # BR + ADRs + SAD + review output
 │
 ├── tests/
 │   ├── smoke-test.sh                 # End-to-end pipeline validation
@@ -172,6 +174,10 @@ All `*.c4` files in a directory tree are **auto-discovered and merged**. Only on
 - **Solution views** should use explicit includes and be exported with `-f <viewId>`
   filters. Avoid generic `include *` landscape views for SAD deliverables unless they
   are intentionally curated portfolio/workspace views.
+
+Real architecture work belongs in root `solutions/` and root `model/`. The `examples/`
+tree is reserved for tutorial/demo/reference material and should not be auto-selected
+for production architecture generation.
 
 ## CI/CD
 

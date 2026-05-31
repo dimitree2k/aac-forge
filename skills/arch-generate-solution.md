@@ -6,13 +6,19 @@ ADRs Accepted → edits the LikeC4 model → validates → exports diagrams → 
 SAD (rev 2) → verifies.
 
 **Argument:** Path to the solution folder, e.g.
-`solutions/001_Forging Runic Diagrams and Covenant Scrolls` or
-`examples/order-management/solutions/002_Automated Order Fulfillment`.
+`solutions/001_Property Intelligence Platform`.
 
-If no argument is provided, iterate through `solutions/NNN_Name/` folders (and
-`examples/*/solutions/NNN_Name/`) from highest number to lowest. Target the first folder
-that has files in `input/` but whose `output/` folder is empty or has only a SAD
-skeleton (rev 1, status: Draft). If none found, ask the user.
+Real architecture work lives under root `solutions/`. The `examples/` tree is only for
+tutorial/demo/reference work.
+
+If no argument is provided, iterate through `solutions/NNN_Name/` folders from highest
+number to lowest. Target the first folder that has files in `input/` but whose `output/`
+folder is empty or has only a SAD skeleton (rev 1, status: Draft). If none found, ask
+the user.
+
+If the user passes a path under `examples/`, confirm that they intentionally want to
+work on tutorial/demo material before creating or modifying artifacts there. Do not
+auto-select `examples/*/solutions/` for normal architecture work.
 
 ---
 
@@ -53,8 +59,11 @@ Use `readFile` to read all files from `<solution>/input/`.
 > `tail`, or `range` options.
 
 **1.2 Read the current architecture model**
-Use `searchFiles` with pattern `*.c4` under `model/` (or the relevant `examples/*/model/`)
-to discover all model files. Use `readFile` to read every discovered `.c4` file.
+Use `searchFiles` with pattern `*.c4` under `model/` to discover all model files. Use
+`readFile` to read every discovered `.c4` file.
+
+Only read an `examples/*/model/` workspace when the user explicitly passed an
+`examples/` solution path and confirmed they are working on tutorial/demo material.
 
 **1.3 Read workspace configuration**
 Use `readFile` to read `aac-forge.config.json` (repo root) for `approvalBackend` and

@@ -15,7 +15,7 @@ The pipeline: **BR document → LLM generates C4 model changes → validate → 
 
 ## 1. Create the Solution Folder
 
-Solutions live in `solutions/` (for the main model) or `examples/<name>/solutions/` (for example models):
+Real architecture solutions live in root `solutions/`:
 
 ```
 solutions/
@@ -28,6 +28,8 @@ solutions/
 ```
 
 `NNN` is a zero-padded sequential number (001, 002, ...). Use the next available.
+The `examples/` tree is reserved for tutorial/demo/reference material. Do not place
+working enterprise architecture packages under `examples/`.
 
 ```bash
 mkdir -p solutions/001_My_Feature/input
@@ -73,6 +75,7 @@ A good BR includes:
 
 See existing BRs for examples:
 
+- `solutions/001_Property Intelligence Platform/input/BR Property Intelligence Platform.md`
 - `examples/order-management/solutions/001_.../input/BR Automated Order Fulfillment.md`
 
 ## 3. Run the Generate Skill
