@@ -1,0 +1,14 @@
+// Common actors and external systems — Order Management
+
+model {
+  // === Actors ===
+  customer = person 'Customer' {
+    description 'External customer placing orders through web and mobile channels'
+  }
+  admin = person 'Administrator' {
+    description 'Internal staff managing orders, inventory, and pricing'
+  }
+  supportAgent = person 'Support Agent' {
+    description 'Customer support representative handling inquiries and returns'
+  }
+}

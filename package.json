@@ -1,0 +1,29 @@
+{
+  "name": "aac-forge",
+  "version": "1.0.0",
+  "description": "Architecture as Code Forge — LLM-driven C4 architecture pipeline using LikeC4",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "likec4 start model/",
+    "build": "likec4 build model/ -o dist/",
+    "validate": "likec4 validate model/",
+    "export:png": "likec4 export png model/ -o export/",
+    "export:json": "likec4 export json model/ -o export/",
+    "export:mermaid": "likec4 gen mermaid model/ --outdir export/",
+    "export:dot": "likec4 gen dot model/ --outdir export/",
+    "format": "likec4 format model/",
+    "test": "echo \"No tests yet — see tests/ for future golden-file tests\""
+  },
+  "keywords": ["architecture-as-code", "c4-model", "likec4", "llm"],
+  "author": "Enterprise Architecture Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "likec4": "^1.57.0"
+  }
+}

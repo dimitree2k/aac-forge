@@ -1,0 +1,19 @@
+// Order Management — Architecture Model
+// Real-world enterprise domain demonstrating the aac-forge pipeline.
+//
+// Domains:
+//   customer-facing  — Web Portal, Mobile API
+//   core-services    — Order Management, Inventory, Pricing
+//   integrations     — Payment Gateway, Shipping Provider, Notification, Message Bus
+
+specification {
+  element person
+  element system
+  element container
+}
+
+views {
+  view landscape {
+    include *
+  }
+}

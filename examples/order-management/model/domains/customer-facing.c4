@@ -1,0 +1,29 @@
+// Customer-Facing Domain
+// Systems: Web Portal, Mobile API
+
+model {
+  // === Web Portal ===
+  webPortal = system 'Web Portal' {
+    description 'Customer-facing web application for browsing products and placing orders'
+    webApp = container 'Web Application' 'React SPA for order placement and account management' 'React'
+    webBff = container 'Web BFF' 'Backend-for-Frontend aggregating core service calls' 'Node.js'
+  }
+
+  // === Mobile API ===
+  mobileApi = system 'Mobile API' {
+    description 'REST API for mobile applications'
+    mobileGateway = container 'Mobile Gateway' 'API gateway for iOS and Android apps' 'Go'
+  }
+
+  // === Customer-Facing Relationships ===
+  customer -> webPortal.webApp 'Browses products and places orders' 'HTTPS'
+  webPortal.webApp -> webPortal.webBff 'Calls backend APIs' 'REST/HTTPS'
+  webPortal.webBff -> orderSystem.orderApi 'Delegates order operations' 'REST/HTTPS'
+  webPortal.webBff -> inventorySystem.inventoryApi 'Queries product availability' 'REST/HTTPS'
+  webPortal.webBff -> pricingSystem.pricingEngine 'Retrieves pricing' 'REST/HTTPS'
+
+  customer -> mobileApi.mobileGateway 'Uses mobile app' 'REST/HTTPS'
+  mobileApi.mobileGateway -> orderSystem.orderApi 'Delegates order operations' 'REST/HTTPS'
+  mobileApi.mobileGateway -> inventorySystem.inventoryApi 'Queries product availability' 'REST/HTTPS'
+  mobileApi.mobileGateway -> pricingSystem.pricingEngine 'Retrieves pricing' 'REST/HTTPS'
+}

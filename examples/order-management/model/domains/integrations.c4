@@ -1,0 +1,49 @@
+// Integrations Domain
+// Systems: Payment Gateway, Shipping Provider, Notification Service, Message Bus
+
+model {
+  // === Payment Gateway (External) ===
+  paymentGateway = system 'Payment Gateway' {
+    description 'External payment processing — card authorization, capture, refund'
+  }
+
+  // === Shipping Provider (External) ===
+  shippingProvider = system 'Shipping Provider' {
+    description 'External shipping — rate calculation, label generation, tracking'
+  }
+
+  // === Notification Service ===
+  notificationService = system 'Notification Service' {
+    description 'Multi-channel customer notifications — email, SMS, push'
+  }
+
+  // === Message Bus ===
+  messageBus = system 'Message Bus' {
+    description 'Enterprise event backbone for async service integration'
+    kafkaBroker = container 'Kafka Broker' 'Event streaming platform' 'Kafka'
+  }
+
+  // === Integration Relationships ===
+  // Payment
+  orderSystem.orderApi -> paymentGateway 'Authorizes and captures payment' 'REST/HTTPS'
+  paymentGateway -> orderSystem.orderApi 'Payment confirmation webhook' 'REST/HTTPS'
+
+  // Shipping
+  orderSystem.orderWorker -> shippingProvider 'Requests shipping rates' 'REST/HTTPS'
+  shippingProvider -> orderSystem.orderWorker 'Returns rates and estimates' 'REST/HTTPS'
+
+  // Notifications
+  orderSystem.orderWorker -> notificationService 'Sends order confirmation' 'Kafka'
+  fulfillmentEngine.fulfillmentApi -> notificationService 'Sends shipment notification' 'Kafka'
+  notificationService -> customer 'Delivers email, SMS, push' 'SMTP/HTTP'
+
+  // Message Bus — all async events flow through Kafka
+  orderSystem.orderApi -> messageBus.kafkaBroker 'Publishes order events' 'Kafka'
+  orderSystem.orderWorker -> messageBus.kafkaBroker 'Publishes status change events' 'Kafka'
+  fulfillmentEngine.fulfillmentApi -> messageBus.kafkaBroker 'Publishes fulfillment events' 'Kafka'
+  inventorySystem.inventoryApi -> messageBus.kafkaBroker 'Publishes stock change events' 'Kafka'
+  notificationService -> messageBus.kafkaBroker 'Consumes notification requests' 'Kafka'
+
+  // Admin notifications
+  admin -> notificationService 'Configures notification templates' 'REST/HTTPS'
+}

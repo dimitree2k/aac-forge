@@ -1,0 +1,33 @@
+# Exported diagrams
+**/export/
+**/output/*.png
+**/output/*.svg
+
+# Temp files
+*.tmp
+*.bak
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# LikeC4
+.likec4/
+**/likec4-model.ts
+dist/
+
+# Reasonix
+.reasonix/
+
+# aac-forge state cache (per-solution, not committed)
+.aac-forge/

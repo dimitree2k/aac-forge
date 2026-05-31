@@ -1,0 +1,40 @@
+// Common actors and external systems for Middle-earth
+// This file is auto-discovered and merged by LikeC4
+
+model {
+  // === Peoples ===
+  hobbits = person 'Hobbits of the Shire' {
+    description 'Halflings of the Shire'
+  }
+  rangers = person 'Rangers of the North' {
+    description 'Dúnedain who guard the wilds of Middle-earth'
+  }
+
+  // === Common systems ===
+  minasTirithLibrary = system 'Library of Minas Tirith' {
+    description 'Repository of scrolls and lore'
+  }
+  rivendellArchives = system 'Archives of Rivendell' {
+    description 'Repository of elven knowledge'
+  }
+  taskPalantir = system 'Task Palantir' {
+    description 'Task tracking system'
+  }
+  gondorBeacons = system 'Beacons of Gondor' {
+    description 'Signal system spanning the White Mountains'
+  }
+  eyeOfSauron = system 'Eye of Sauron' {
+    description 'All-seeing gateway of magic'
+  }
+  istari = system 'Istari' {
+    description 'Wizards beyond the Sea, accessible via palantíri'
+  }
+
+  // === Underground Vaults ===
+  minesOfMoria = system 'Mines of Moria' {
+    description 'Ancient dwarven vault (legacy)'
+  }
+  ereborTreasury = system 'Treasury of Erebor' {
+    description 'Vault of the Kingdom Under the Mountain'
+  }
+}

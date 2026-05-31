@@ -1,0 +1,15 @@
+// Root workspace — LikeC4 auto-discovers all *.c4 files in the directory
+// Common elements live in common.c4
+// Domain-specific elements go in domains/*.c4
+
+specification {
+  element person
+  element system
+  element container
+}
+
+views {
+  view landscape {
+    include *
+  }
+}

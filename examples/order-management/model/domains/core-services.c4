@@ -1,0 +1,103 @@
+// Core Services Domain
+// Systems: Order Management, Inventory, Pricing, Fulfillment Engine
+
+model {
+  // === Order Management ===
+  orderSystem = system 'Order Management' {
+    description 'Core order processing system — creation, status tracking, lifecycle management'
+    orderApi = container 'Order API' 'REST API for order CRUD and status operations' 'Go'
+    orderDb = container 'Order Database' 'Persistent order storage with event sourcing' 'PostgreSQL'
+    orderWorker = container 'Order Worker' 'Async processor for order validation and state transitions' 'Go'
+  }
+
+  // === Inventory ===
+  inventorySystem = system 'Inventory' {
+    description 'Product inventory and stock level management'
+    inventoryApi = container 'Inventory API' 'REST API for stock queries and reservations' 'Java'
+    inventoryDb = container 'Inventory Database' 'Stock levels, warehouse locations, SKU catalog' 'PostgreSQL'
+  }
+
+  // === Pricing ===
+  pricingSystem = system 'Pricing' {
+    description 'Pricing engine with discount rules and tax calculation'
+    pricingEngine = container 'Pricing Engine' 'Real-time price calculation with rule evaluation' 'Python'
+    pricingDb = container 'Pricing Database' 'Price lists, discount rules, tax tables' 'PostgreSQL'
+  }
+
+  // === Fulfillment Engine (Solution 001) ===
+  fulfillmentEngine = system 'Fulfillment Engine' {
+    description 'Orchestrates order fulfillment — picklists, packing, shipping label generation'
+    fulfillmentApi = container 'Fulfillment API' 'REST API for fulfillment operations and status' 'Go'
+    picklistGenerator = container 'Picklist Generator' 'Generates warehouse picklists from order line items' 'Python'
+    fulfillmentDb = container 'Fulfillment Database' 'Fulfillment state, picklist history, shipment tracking' 'PostgreSQL'
+  }
+
+  // === Core Service Relationships ===
+  // Order flow
+  orderSystem.orderApi -> orderSystem.orderDb 'Reads and writes orders' 'TCP'
+  orderSystem.orderApi -> orderSystem.orderWorker 'Enqueues validation jobs' 'Kafka'
+  orderSystem.orderWorker -> orderSystem.orderDb 'Updates order status' 'TCP'
+  orderSystem.orderWorker -> inventorySystem.inventoryApi 'Reserves stock' 'REST/HTTPS'
+  orderSystem.orderWorker -> pricingSystem.pricingEngine 'Validates final price' 'REST/HTTPS'
+
+  // Inventory
+  inventorySystem.inventoryApi -> inventorySystem.inventoryDb 'Reads and writes stock' 'TCP'
+
+  // Pricing
+  pricingSystem.pricingEngine -> pricingSystem.pricingDb 'Reads rules and prices' 'TCP'
+
+  // Fulfillment (Solution 001)
+  orderSystem.orderWorker -> fulfillmentEngine.fulfillmentApi 'Triggers fulfillment on order confirmation' 'REST/HTTPS'
+  fulfillmentEngine.fulfillmentApi -> fulfillmentEngine.picklistGenerator 'Requests picklist generation' 'gRPC'
+  fulfillmentEngine.fulfillmentApi -> fulfillmentEngine.fulfillmentDb 'Reads and writes fulfillment state' 'TCP'
+  fulfillmentEngine.picklistGenerator -> inventorySystem.inventoryApi 'Reads stock locations for pick routing' 'REST/HTTPS'
+  fulfillmentEngine.picklistGenerator -> fulfillmentEngine.fulfillmentDb 'Stores generated picklists' 'TCP'
+  fulfillmentEngine.fulfillmentApi -> shippingProvider 'Requests shipment and label generation' 'REST/HTTPS'
+  fulfillmentEngine.fulfillmentApi -> notificationService 'Sends shipment confirmation to customer' 'Kafka'
+
+  // Admin operations
+  admin -> orderSystem.orderApi 'Manages orders and exceptions' 'REST/HTTPS'
+  admin -> inventorySystem.inventoryApi 'Manages stock levels' 'REST/HTTPS'
+  admin -> pricingSystem.pricingEngine 'Manages pricing rules' 'REST/HTTPS'
+  admin -> fulfillmentEngine.fulfillmentApi 'Manages fulfillment exceptions' 'REST/HTTPS'
+
+  // Support operations
+  supportAgent -> orderSystem.orderApi 'Looks up orders for customers' 'REST/HTTPS'
+
+  // === Data Flows — Order Management ===
+  orderSystem.orderDb -> orderSystem.orderApi 'INF01. Order data' 'TCP'
+  orderSystem.orderApi -> orderSystem.orderWorker 'INF02. Order events for processing' 'Kafka'
+  orderSystem.orderWorker -> orderSystem.orderDb 'INF03. Updated order status' 'TCP'
+  inventorySystem.inventoryApi -> orderSystem.orderWorker 'INF04. Stock reservation confirmation' 'REST/HTTPS'
+
+  // === Data Flows — Fulfillment Engine ===
+  orderSystem.orderWorker -> fulfillmentEngine.fulfillmentApi 'INF01. Order ready for fulfillment' 'REST/HTTPS'
+  fulfillmentEngine.picklistGenerator -> fulfillmentEngine.fulfillmentApi 'INF02. Generated picklist' 'gRPC'
+  fulfillmentEngine.fulfillmentDb -> fulfillmentEngine.fulfillmentApi 'INF03. Fulfillment state' 'TCP'
+  inventorySystem.inventoryApi -> fulfillmentEngine.picklistGenerator 'INF04. Stock locations and quantities' 'REST/HTTPS'
+}
+
+views {
+  // === Order Management ===
+  view orderSystemContainers {
+    include
+      orderSystem.*,
+      -> orderSystem.* ->
+  }
+
+  // === Fulfillment Engine (Solution 001) ===
+  view fulfillmentEngineContainers {
+    include
+      fulfillmentEngine.*,
+      -> fulfillmentEngine.* ->
+  }
+
+  // === Solution 001: Automated Order Fulfillment — consolidated ===
+  view solution001Containers {
+    include
+      orderSystem.*,
+      fulfillmentEngine.*,
+      -> orderSystem.* ->,
+      -> fulfillmentEngine.* ->
+  }
+}
