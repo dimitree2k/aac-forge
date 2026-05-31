@@ -1,4 +1,4 @@
-# Architecture-as-Code + LLM Pipeline — Fork Specification
+# Architecture-as-Code + LLM Pipeline — Pipeline Specification
 
 **Status:** Draft  
 **Author:** Enterprise Architecture Team  
@@ -57,7 +57,7 @@ We retain the ability to export Structurizr-compatible DSL for teams that use it
 ```
 .
 ├── README.md
-├── SPECIFICATION.md                  # This document
+├── pipeline-specification.md           # This document
 ├── .env.example
 ├── package.json                      # Node.js project (LikeC4 + scripts)
 │
@@ -106,7 +106,7 @@ We retain the ability to export Structurizr-compatible DSL for teams that use it
 │   └── REVIEW-template.md            # Review report template
 │
 ├── docs/
-│   ├── SPECIFICATION.md
+│   ├── pipeline-specification.md
 │   ├── Corporate Architecture Standards/
 │   │   └── Corporate_Standard.md
 │   └── Security Standards/
@@ -382,19 +382,38 @@ Phase 7. VERIFY
 
 ### 6.2 arch-review-solution
 
-**What it does:** 5-role review of a completed SAD.
+**What it does:** Systematic 5-role review of a completed SAD using structured artifact enumeration + concrete checklists.
 
-**Key improvements:**
-- Uses standards from `docs/` as normative reference
-- Auto-detects adjacent systems from the model (no manual enumeration)
-- BR → SAD coverage matrix is automated (LLM maps each BR requirement to SAD sections)
+**Key improvements over baseline review:**
+- **Phase 1.5 — Pre-Review Enumeration.** Produces 4 structured tables (Systems, Containers, Relationships, BR Requirements) that become the single source of truth for all subsequent checks. Converts subjective "looks right?" into systematic "for each X, check Y."
+- **Phase 2 — Cross-Cutting Pattern Checks.** 10 systematic checks (CC-1 through CC-10) run before role reviews, catching structural gaps that individual roles miss through gestalt judgment: store+event consistency (transactional outbox), external call resilience (dead-letter/circuit-breaker), API contracts, event schemas, data store schemas, technology deferral thresholds, stewardship workflow completeness, enterprise integration touchpoints (API Gateway, IdP, SIEM, Data Catalog), DR/BCP posture, and RACI/operating model.
+- **Concrete, enumeration-driven checklists.** Each role's checklist items are lookup tasks against the enumerated tables, not prose paragraphs. Anti-skip instructions require every item to produce either a finding or an explicit `✓ OK`.
+- **Minimum-findings guard.** Each role must produce ≥3 findings or explain why fewer — prevents superficial "0 findings, looks good" passes.
+- **Coverage invariants.** Phase 5 self-verification checks that every TBD container, contractless relationship, and partial BR requirement has a corresponding finding or acceptance note.
+- **Framework alignment.** Each review element is traceable to an established framework or pattern:
 
-**Roles maintained from original:**
-1. Solution Architect (technical quality, decomposition, NFRs)
-2. Enterprise Architect (landscape fit, naming, CMDB, reuse)
-3. Security Specialist (auth, secrets, classification, logging)
-4. Adjacent System Owner (per-system impact analysis)
-5. Business Process Owner (BR coverage, user journey, business value)
+| Review Element | Aligned Framework | Key Reference |
+| --- | --- | --- |
+| Enumeration-first approach (Phase 1.5) | **ATAM** — Architecture Tradeoff Analysis Method (SEI/CMU) | Scenario-based evaluation with utility trees; CMU/SEI-2000-TR-004 |
+| Cross-cutting pattern checks (Phase 2) | **Enterprise Integration Patterns** (Hohpe/Woolf, 2003) | Transactional Outbox, Dead Letter Channel, Guaranteed Delivery, Circuit Breaker |
+| Role-based stakeholder review (Phase 3) | **ISO/IEC 42010:2022** — Architecture description | Stakeholder concerns and architecture viewpoints (§5.3) |
+| Solution Architect checklist | **C4 Model** (Simon Brown) | Container decomposition, integration patterns, technical quality |
+| Enterprise Architect checklist | **TOGAF 10** — ADM Phase E/F | Portfolio assessment, capability mapping, reuse, CMDB, shared services |
+| Security Specialist checklist | **NIST SP 800-53 Rev 5** | AC (Access Control), AU (Audit), SC (System & Communications Protection) families |
+| Adjacent System Owner checklist | **TOGAF 10** — Stakeholder Management | Impact analysis, dependency management, SLA assessment |
+| Business Process Owner checklist | **BABOK v3** (IIBA) / **TOGAF ADM Phase B** | Requirements coverage, user journey, business value traceability |
+| ADR review within each role | **TOGAF 10** — Architecture Decisions | Decision log, traceability, option analysis with consequences |
+
+This is not a formal implementation of any single framework — it is a pragmatic
+synthesis designed to catch the most common architecture gaps with minimal ceremony,
+while being executable by an LLM against structured artifact tables.
+
+**Roles:**
+1. Solution Architect (technical quality, component decomposition, protocol alignment, NFR quantification, diagram-text consistency)
+2. Enterprise Architect (CMDB, naming, notation, reuse, foundation governance, capability mapping, information model, DR/BCP, RACI, cost)
+3. Security Specialist (authZ per flow, PII, secrets, audit completeness, least privilege, encryption, break-glass, external exchange)
+4. Adjacent System Owner (per-system dependency, load, SLA, support, monitoring, degradation, contract)
+5. Business Process Owner (BR coverage matrix, user journey, scope alignment, business value, constraints, open question disposition)
 
 ### 6.3 arch-export-diagrams
 

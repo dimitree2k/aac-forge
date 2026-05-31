@@ -116,7 +116,7 @@ Each role has a distinct checklist and produces independently numbered findings.
 
 ## See Also
 
-- [Full Fork Specification](SPECIFICATION.md) — detailed technical spec
+- [Pipeline Specification](pipeline-specification.md) — detailed technical spec
 - [LikeC4 Documentation](https://likec4.dev/)
 - [C4 Model](https://c4model.com/)
 - [Diátaxis Framework](https://diataxis.fr/)

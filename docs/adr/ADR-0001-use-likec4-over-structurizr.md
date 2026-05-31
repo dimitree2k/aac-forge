@@ -95,4 +95,4 @@ The MIT license and lack of Docker dependency also simplify CI and onboarding.
 - [LikeC4 Documentation](https://likec4.dev/)
 - [Structurizr DSL](https://docs.structurizr.com/dsl)
 - [Pipeline Architecture](../explanation/architecture.md)
-- [Fork Specification](../explanation/SPECIFICATION.md)
+- [Pipeline Specification](../explanation/pipeline-specification.md)

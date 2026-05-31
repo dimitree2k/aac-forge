@@ -101,7 +101,7 @@ aac-forge/
 │   └── smoke-test.sh                 # End-to-end pipeline validation
 │
 ├── docs/
-│   └── SPECIFICATION.md              # Full fork specification
+│   └── pipeline-specification.md     # Full pipeline specification
 │
 ├── .github/workflows/validate.yml     # CI/CD — validation on PR, diagram export on merge
 └── package.json                       # npm scripts for dev, build, validate, export

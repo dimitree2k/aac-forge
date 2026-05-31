@@ -40,7 +40,7 @@ _Understanding-oriented, background and design decisions._
 | Explanation | Contents |
 | --- | --- |
 | [Pipeline Architecture](explanation/architecture.md) | Why this stack, how the pipeline works, design decisions |
-| [Technical Specification](explanation/SPECIFICATION.md) | Full technical specification for the aac-forge pipeline |
+| [Pipeline Specification](explanation/pipeline-specification.md) | Full technical specification for the aac-forge pipeline |
 
 ---
 

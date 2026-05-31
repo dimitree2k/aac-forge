@@ -26,7 +26,7 @@ The four LLM playbooks that drive the aac-forge pipeline. Each skill is provider
 
 ## arch-review-solution
 
-**Purpose:** 5-role comprehensive review of a completed SAD.
+**Purpose:** Systematic 5-role review of a completed SAD using structured artifact enumeration + concrete checklists. Aligned with C4 Model, TOGAF 10, ATAM, NIST SP 800-53, and Enterprise Integration Patterns.
 
 **Argument:** Solution path.
 
@@ -34,20 +34,29 @@ The four LLM playbooks that drive the aac-forge pipeline. Each skill is provider
 
 | Phase | What happens |
 | --- | --- |
-| 1. CONTEXT | Read input docs, SAD, current model, standards |
-| 2. REVIEW | Sequential review from 5 role perspectives |
-| 3. REPORT | Generate structured findings report |
-| 4. VERIFY | Cross-check finding counts, numbering, cross-references |
+| 1. CONTEXT | Read input docs, SAD, current model, standards, ADRs |
+| 1.5. ENUMERATE | Produce 4 structured artifact tables (Systems, Containers, Relationships, BR Requirements) as ground truth |
+| 2. PATTERNS | Run 10 systematic cross-cutting checks (store+event consistency, external call resilience, API contracts, event schemas, data schemas, technology deferral, stewardship completeness, enterprise integration, DR/BCP, RACI) |
+| 3. REVIEW | Sequential review from 5 role perspectives — each role executes a concrete checklist against the enumerated tables |
+| 4. REPORT | Generate structured findings report |
+| 5. VERIFY | Coverage guard: every TBD container, contractless relationship, and partial BR requirement must have a finding or acceptance note |
 
 **5 Roles:**
 
 | # | Role | Focus |
 | --- | --- | --- |
-| 1 | Solution Architect | Technical quality, decomposition, integration patterns, NFRs |
-| 2 | Enterprise Architect | Landscape alignment, reuse, naming, CMDB, principles |
-| 3 | Security Specialist | Auth, secrets, data protection, logging, audit |
-| 4 | Adjacent System Owner | Per-system impact, dependencies, SLA, backward compat |
-| 5 | Business Process Owner | BR coverage, user journey, business value, usability |
+| 1 | Solution Architect | Technical quality, component decomposition, protocol alignment, NFR quantification, diagram-text consistency, ADR alignment |
+| 2 | Enterprise Architect | CMDB registration, naming conventions, notation consistency, reuse justification, foundation governance, capability mapping, information model, DR/BCP, RACI, cost |
+| 3 | Security Specialist | AuthZ per flow, PII protection, secret management, audit completeness, least privilege, encryption, break-glass, external exchange approval, audit boundary |
+| 4 | Adjacent System Owner | Per-system dependency, load, SLA, support, monitoring, degradation, contract assessment |
+| 5 | Business Process Owner | BR coverage matrix, user journey per UI, scope alignment, business value traceability, business constraints, usability, open question disposition |
+
+**Key improvements over baseline review:**
+- Enumeration before judgment prevents gestalt passes and missed gaps
+- Cross-cutting pattern checks (CC-1 through CC-10) catch structural issues roles miss
+- Each checklist item is a concrete lookup against enumerated tables, not a prose paragraph
+- Minimum-findings guard (≥3 per role) prevents superficial passes
+- Coverage invariants in Phase 5 auto-detect under-reviewing
 
 **Output:** `SAD Review <Name>.md` with per-role finding tables and severity classification (🔴 Critical / 🟡 Significant / 🟢 Minor / 💡 Recommendation).
 

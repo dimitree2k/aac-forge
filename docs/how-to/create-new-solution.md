@@ -149,14 +149,19 @@ Verify the SAD:
 arch-review-solution: solutions/001_My_Feature/
 ```
 
-The review covers 5 roles:
-1. **Solution Architect** — technical quality
-2. **Enterprise Architect** — landscape fit
-3. **Security Specialist** — auth, secrets, logging
-4. **Adjacent System Owner** — impact on existing systems
-5. **Business Process Owner** — BR coverage
+The review runs in 5 phases:
+1. **Context gathering** — reads BR, SAD, model, standards, ADRs
+2. **Enumeration** — produces structured tables of Systems, Containers, Relationships, and BR Requirements
+3. **Cross-cutting pattern checks** — 10 systematic checks for store+event consistency, external call resilience, API/event/data contracts, enterprise integration, DR/BCP, RACI, etc.
+4. **5-role review** — each role executes a concrete checklist against the enumerated tables:
+   - **Solution Architect** — technical quality, decomposition, protocol alignment, NFRs
+   - **Enterprise Architect** — CMDB, naming, reuse, foundation governance, capability mapping, cost
+   - **Security Specialist** — authZ per flow, PII, secrets, audit, encryption, break-glass
+   - **Adjacent System Owner** — per-system dependency, load, SLA, support, monitoring
+   - **Business Process Owner** — BR coverage matrix, user journey, scope, business value
+5. **Verification** — coverage guard checks that no gap was missed
 
-The review report is written to `output/SAD Review My Feature.md`.
+The review report is written to `output/SAD Review My Feature.md`. Framework alignment: C4 Model, TOGAF 10, ATAM, NIST SP 800-53, Enterprise Integration Patterns, ISO/IEC 42010.
 
 ## 7. Iterate
 
