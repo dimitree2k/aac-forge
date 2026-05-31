@@ -46,15 +46,21 @@ If there are errors, each one is reported with file path, line number, and descr
 ### PNG (for documents and presentations)
 
 ```bash
-# All views from a workspace
+# All views from a workspace (for intentionally broad exports)
 npx likec4 export png examples/order-management/model/ -o output/ --flat
 
-# Specific views only
+# Specific solution views only (preferred for SAD deliverables)
 npx likec4 export png examples/order-management/model/ -f "solution001*" -o output/ --flat
 
 # Dark theme
 npx likec4 export png examples/order-management/model/ -o output/ --flat --theme dark
 ```
+
+For solution packages, export only the views referenced by the SAD. The LikeC4 app may
+also show an auto-generated overview such as `Landscape view` and any explicit workspace
+views such as `landscape`; those are navigation or portfolio views unless intentionally
+curated for the solution. Do not include generated `index.*` or generic `landscape.*`
+files in solution output folders unless the SAD references them.
 
 ### JSON (for programmatic processing)
 
@@ -67,6 +73,14 @@ npx likec4 export json --pretty -o model.json examples/order-management/model/
 ```bash
 npx likec4 gen mermaid examples/order-management/model/ --outdir mermaid/
 ```
+
+If Mermaid generation emits workspace-level `index.mmd` or generic `landscape.mmd`
+files while preparing a solution package, remove those stale navigation artifacts unless
+they are intentionally curated deliverables. The Mermaid generator may not support view
+filters in every LikeC4 version, so cleanup is part of the solution export step.
+Use exported PNGs or the interactive browser to verify LikeC4 visual semantics. Mermaid
+is useful for portable Markdown source, but its shape mapping is approximate and generic
+services may still appear as rectangles.
 
 ### Other formats
 

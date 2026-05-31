@@ -69,7 +69,11 @@ LikeC4 uses a TypeScript-like DSL with user-defined element kinds:
 
 ```ts
 specification {
-  element person
+  element person {
+    style {
+      shape person
+    }
+  }
   element system
   element container
 }
@@ -91,10 +95,30 @@ model {
 }
 
 views {
-  view landscape { include * }
+  view orderSystemContext {
+    include orderSystem, -> orderSystem ->
+  }
   view orderSystemContainers { include orderSystem.*, -> orderSystem.* -> }
 }
 ```
+
+Do not add generic solution views such as `view landscape { include * }` unless the
+view is an intentionally curated portfolio/workspace view. LikeC4 auto-discovers all
+`*.c4` files, so broad views and root/common sample elements can leak unrelated content
+into solution exports. For SAD deliverables, create solution-scoped views with explicit
+includes and export them with `-f <viewId>` filters.
+
+Use semantic LikeC4 shapes where the element role is clear: `person` for actors,
+`browser` for web UIs, `mobile` for mobile apps, `component` for services/processors,
+`cylinder` or `storage` for databases and datasets, `bucket` for object storage,
+`queue` for event topics/brokers, and `document` for documents or generated files.
+Use vendor icons only when the technology choice is already approved or explicitly
+assumed.
+
+Use `docs/reference/visual-notation.md` as the canonical lookup for diagram colors,
+borders, shapes, icons, and relationship styling. Colors and borders must carry
+architecture meaning such as ownership zone, sensitivity, lifecycle status, publication
+path, certainty, or boundary semantics.
 
 ### Modular Files
 

@@ -112,7 +112,11 @@ LikeC4 uses a TypeScript-like DSL with **user-defined element kinds**:
 
 ```ts
 specification {
-  element person            // define kinds
+  element person {          // define kinds and default styles
+    style {
+      shape person
+    }
+  }
   element system
   element container
 }
@@ -137,8 +141,10 @@ model {
 }
 
 views {
-  // Landscape — all elements
-  view landscape { include * }
+  // System context — explicit solution-scoped view
+  view orderSystemContext {
+    include orderSystem, -> orderSystem ->
+  }
 
   // Per-system container view
   view orderSystemContainers {
@@ -156,9 +162,16 @@ All `*.c4` files in a directory tree are **auto-discovered and merged**. Only on
 - **Element IDs:** PascalCase for systems (`orderSystem`), camelCase for containers (`orderApi`)
 - **Protocols:** Always specified: `'REST/HTTPS'`, `'gRPC'`, `'TCP'`, `'Kafka'`, `'AMQP'`, `'MCP/HTTPS'`, `'HTTPS'`
 - **Containers** are nested inside their parent system
+- **Semantic shapes** should be used where roles are clear: `person`, `browser`,
+  `mobile`, `component`, `cylinder`, `storage`, `bucket`, `queue`, `document`
+- **Visual notation** for colors, borders, icons, and relationship styling is defined
+  in `docs/reference/visual-notation.md`
 - **Parent→child** relationships (system→own container) are implicit — don't declare them
 - **Data flows** use INFxx codes in relationship titles: `'INF01. Description of data'`
 - **Cross-system container references** use the container ID directly (it's globally unique)
+- **Solution views** should use explicit includes and be exported with `-f <viewId>`
+  filters. Avoid generic `include *` landscape views for SAD deliverables unless they
+  are intentionally curated portfolio/workspace views.
 
 ## CI/CD
 

@@ -45,13 +45,35 @@ Check `model/workspace.c4` — the `specification` block defines available eleme
 
 ```ts
 specification {
-  element person
+  element person {
+    style {
+      shape person
+    }
+  }
   element system
   element container
 }
 ```
 
-If you need a new kind (e.g., `database`, `queue`, `mobileApp`), add it to the `specification` block in `workspace.c4`. All domain files share the same specification.
+Use semantic styles before adding new element kinds. Databases, queues, mobile apps,
+buckets, browser UIs, and documents are usually normal `container` elements with
+`style { shape ... }`, not separate element kinds. Add a new element kind only when the
+model needs a genuinely new semantic category with its own rules.
+
+```ts
+paymentDb = container 'Payment Database' 'Transaction ledger' 'PostgreSQL' {
+  style {
+    shape cylinder
+    icon tech:postgresql
+  }
+}
+
+paymentEvents = container 'Payment Events' 'Publishes payment lifecycle events' 'Kafka' {
+  style {
+    shape queue
+  }
+}
+```
 
 ## 3. Naming Conventions
 

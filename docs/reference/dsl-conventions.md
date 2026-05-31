@@ -21,13 +21,65 @@ Defines element kinds, relationship kinds, and tags available in this workspace:
 
 ```ts
 specification {
-  element person       // actors
+  element person {     // actors
+    style {
+      shape person
+    }
+  }
   element system       // software systems
   element container    // containers inside systems
 }
 ```
 
 All domain files share this specification. Add new kinds here when needed.
+
+## Semantic Shapes and Icons
+
+Use LikeC4 shapes to make diagrams readable. Do not create new element kinds just to
+change visual appearance; prefer `style { shape ... }` on the existing `person`,
+`system`, or `container`.
+
+For the full shape, color, border, icon, and relationship styling convention, see
+[Visual Notation](visual-notation.md).
+
+Common shapes available in LikeC4:
+
+| Shape | Use for |
+| --- | --- |
+| `person` | Business users, operators, external actors |
+| `browser` | Web UIs and browser-based applications |
+| `mobile` | Mobile apps |
+| `component` | Application services, processors, workers |
+| `cylinder` | Databases, warehouses, analytical datasets |
+| `storage` | Persistent stores when cylinder is not specific enough |
+| `bucket` | Object storage, file landing zones, data lake buckets |
+| `queue` | Event topics, brokers, queues, publishers |
+| `document` | Reports, documents, generated files |
+| `rectangle` | Generic systems or elements without a clearer role |
+
+```ts
+propertyStore = container 'Property Master Store' 'Country-local canonical records' 'PostgreSQL' {
+  style {
+    shape cylinder
+    icon tech:postgresql
+  }
+}
+
+stewardshipUi = container 'Stewardship UI' 'Steward review application' 'Web' {
+  style {
+    shape browser
+  }
+}
+
+eventPublisher = container 'Event Publisher' 'Publishes lifecycle events' 'Kafka' {
+  style {
+    shape queue
+  }
+}
+```
+
+Use technology/vendor icons only when the technology is decided or explicitly assumed
+by the BR/ADR/SAD. An icon should clarify a decision, not create one silently.
 
 ## Model Block — Elements
 
@@ -54,7 +106,12 @@ orderSystem = system 'Order Management' {
   description 'Core order processing'
 
   orderApi = container 'Order API' 'REST API for order operations' 'Go'
-  orderDb = container 'Order Database' 'Persistent order storage' 'PostgreSQL'
+  orderDb = container 'Order Database' 'Persistent order storage' 'PostgreSQL' {
+    style {
+      shape cylinder
+      icon tech:postgresql
+    }
+  }
   orderWorker = container 'Order Worker' 'Async order processor' 'Go'
 }
 ```
@@ -146,11 +203,6 @@ Views are defined in the `views { }` block (shared across all files):
 
 ```ts
 views {
-  // Landscape — every element in one diagram
-  view landscape {
-    include *
-  }
-
   // System context — a system and its direct relationships
   view orderSystemContext {
     include
@@ -183,3 +235,24 @@ views {
 | `include systemName.*` | All containers inside that system |
 | `include -> systemName ->` | Relationships to/from that system |
 | `include -> systemName.* ->` | Container-level relationships |
+
+## View Hygiene
+
+LikeC4 auto-discovers and merges all `*.c4` files in a workspace. Broad root views can
+therefore pull unrelated domains, examples, or stale sample elements into solution
+deliverables.
+
+For solution packages:
+
+- Prefer solution-scoped views with explicit `include` rules.
+- Avoid generic root views such as `view landscape { include * }` unless the view is an
+  intentionally curated portfolio/workspace view.
+- Use human-readable view IDs/names that make sense in the LikeC4 UI and exported files.
+- Export SAD deliverables with `-f <viewId>` filters.
+- Treat generated `index.*` and generic workspace overview files as app navigation
+  artifacts, not solution deliverables, unless they are intentionally curated and
+  referenced by the SAD.
+- Keep root/common model files free of sample or demo-domain elements.
+
+For portfolio views, explicitly include the portfolio elements or domains that belong in
+the view instead of relying on `include *`.

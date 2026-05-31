@@ -240,9 +240,14 @@ The LLM runtime injects the appropriate adapter, so the skill text is identical 
 LikeC4 uses a TypeScript-like DSL. Key differences from Structurizr DSL:
 
 ```typescript
-// LikeC4 — system definition
 specification {
-  specification {}
+  element person {
+    style {
+      shape person
+    }
+  }
+  element system
+  element container
 }
 
 model {
@@ -252,7 +257,7 @@ model {
   }
 
   // Software system
-  orderSystem = softwareSystem 'Order Management' {
+  orderSystem = system 'Order Management' {
     description 'Core order processing system'
 
     // Containers inside the system
@@ -260,13 +265,16 @@ model {
       // Technology: Go
     }
     orderDb = container 'Order Database' 'Persistent order storage' 'PostgreSQL' {
-      // Tagged as database
+      style {
+        shape cylinder
+        icon tech:postgresql
+      }
     }
     orderWorker = container 'Order Worker' 'Async order processor' 'Go'
   }
 
   // External system
-  paymentGateway = softwareSystem 'Payment Gateway' {
+  paymentGateway = system 'Payment Gateway' {
     description 'External payment processing'
   }
 
@@ -277,14 +285,16 @@ model {
 }
 
 views {
-  // System landscape
-  view landscape of 'Landscape' {
-    include *
+  // System context
+  view orderSystemContext {
+    title 'Order Management Context'
+    include orderSystem, -> orderSystem ->
   }
 
   // Container view
-  view orderSystem of 'Order Management Architecture' {
-    include *
+  view orderSystemContainers {
+    title 'Order Management Containers'
+    include orderSystem.*, -> orderSystem.* ->
   }
 }
 ```
@@ -296,7 +306,7 @@ views {
 | Modular files | Each domain = `model.c4` + `views.c4`, imported in `workspace.c4` |
 | Naming | PascalCase for system IDs, camelCase for container IDs |
 | Protocols | Always specified: `'REST/HTTPS'`, `'gRPC'`, `'TCP'`, `'Kafka'`, `'GraphQL'` |
-| Tags | Use LikeC4's native tag system: `#new`, `#changed`, `#external`, `#database`, `#queue`, `#deprecated` |
+| Visual semantics | Use LikeC4 `style { shape ... }` for clear roles such as `person`, `browser`, `component`, `cylinder`, `storage`, `bucket`, `queue`, and `document` |
 | Data flows | Use LikeC4's `note` or relationship description for INF numbering |
 | External systems | Tag with `#external` |
 | New/changed | All elements added/modified for a solution use `#new` / `#changed` |
@@ -679,4 +689,3 @@ echo "=== Smoke test PASSED ==="
 - [Structurizr DSL](https://docs.structurizr.com/dsl)
 - [Structurizr Product Consolidation (Patreon, May 2025)](https://www.patreon.com/posts/146923136)
 - [C4 Model](https://c4model.com/)
-

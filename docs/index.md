@@ -28,6 +28,7 @@ _Information-oriented, technical facts and specs._
 | Reference | Contents |
 | --- | --- |
 | [DSL Conventions](reference/dsl-conventions.md) | LikeC4 syntax: elements, relationships, protocols, data flows, views |
+| [Visual Notation](reference/visual-notation.md) | Shape, color, border, icon, and relationship styling conventions for readable diagrams |
 | [CLI Commands](reference/cli-commands.md) | All npm scripts, `likec4` commands, and project scripts |
 | [Skills Reference](reference/skills-reference.md) | The 4 LLM playbooks — phases, roles, adapter interface |
 | [ADR Process Spec](input/specs/ADR-process.md) | Formal specification for BR→ADRs→SAD, approval backend, ADR lifecycle, state machine |
@@ -53,5 +54,6 @@ _Understanding-oriented, background and design decisions._
 | Follow the full ADR process | [ADR Process Walkthrough](tutorials/adr-process-walkthrough.md) |
 | Export PNG diagrams | [Run and Preview → Export Diagrams](how-to/run-and-preview.md) |
 | Understand the DSL syntax | [DSL Conventions](reference/dsl-conventions.md) |
+| Understand diagram shape/color conventions | [Visual Notation](reference/visual-notation.md) |
 | Know what CLI commands are available | [CLI Commands](reference/cli-commands.md) |
 | Understand why we chose LikeC4 | [Pipeline Architecture](explanation/architecture.md) |

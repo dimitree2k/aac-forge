@@ -58,6 +58,7 @@ Conduct a sequential review from the perspective of each of the 5 roles. For eac
 - **NFRs:** Are non-functional requirements sufficient? Performance, availability, scalability metrics realistic?
 - **Modification descriptions:** Are work descriptions for each system detailed enough for effort estimation?
 - **Diagrams vs text:** Do diagrams match the textual description? Any discrepancies in names, components, flows?
+- **Diagram visual semantics:** Do LikeC4 shapes/icons communicate element roles? People should not render as generic systems, UIs should be visually distinguishable from services, and stores, datasets, queues/events, buckets, and documents should not all appear as default rectangles.
 - **Solution completeness:** Does the SAD cover all requirements from the BR? Missing functional requirements?
 - **ADR alignment (secondary):** Does the SAD contradict any Accepted ADR? Are ADR decisions reflected in the architecture? If the SAD describes REST but ADR-002-0001 specifies Kafka, flag as SA finding with ADR cross-reference.
 
@@ -71,6 +72,7 @@ Conduct a sequential review from the perspective of each of the 5 roles. For eac
 - **Landscape alignment:** Does the solution fit the existing C4 model? Does it duplicate capabilities of existing systems?
 - **Reuse:** Are existing systems, services, integrations maximally utilized? New components justified vs enhancing existing ones?
 - **Consistency:** Are system and component names aligned with the C4 model? Naming conventions followed?
+- **Notation consistency:** Are the `docs/reference/visual-notation.md` shape, color, border, icon, and relationship conventions used consistently without becoming decorative? Are vendor icons used only where the technology choice is already approved or explicitly assumed?
 - **Architectural principles:** Are principles followed (check `docs/` standards)?
 - **Impact on adjacent systems:** Has impact been assessed? Excessive dependencies?
 - **Scalability:** Can the solution scale to other business domains? Built-in limitations?

@@ -38,7 +38,7 @@ npx likec4 validate --no-layout    # Skip layout drift check (faster)
 ### Export
 
 ```bash
-npx likec4 export png [path]    # Export all views to PNG
+npx likec4 export png [path]    # Export views to PNG
 npx likec4 export jpg [path]    # Export to JPEG
 npx likec4 export json [path]   # Export model to JSON
 npx likec4 export drawio [path] # Export to DrawIO (.drawio)
@@ -54,6 +54,14 @@ PNG options:
 | `--theme dark` | Dark color scheme |
 | `--timeout <sec>` | Playwright timeout (default 15) |
 | `-i`, `--ignore` | Continue if some views fail |
+
+For solution deliverables, prefer filtered PNG exports with `-f <viewId>` and include
+only views referenced by the SAD. Treat generated `index.*` and generic workspace
+overview files as navigation artifacts unless intentionally curated.
+
+PNG/browser output is the authoritative rendering for LikeC4 visual semantics. Mermaid
+generation maps LikeC4 shapes approximately and may still render generic services as
+rectangles.
 
 ### Code Generation
 

@@ -206,6 +206,31 @@ Follow all conventions from the DSL reference:
 - Relationships with protocol
 - Globally unique container IDs (no dot-notation needed)
 - Cross-system references use bare container IDs
+- Follow `docs/reference/visual-notation.md` for shape, color, border, icon, and
+  relationship styling conventions.
+- Use semantic LikeC4 shapes and icons deliberately. Do not leave every element as the
+  default rectangle when the element role is clear:
+  - people/actors use `shape person` through the `person` specification style
+  - browser/web UI containers use `shape browser`
+  - mobile apps use `shape mobile`
+  - canonical databases and analytical datasets use `shape cylinder` or `shape storage`
+  - object storage, file landing zones, and data lake buckets use `shape bucket`
+  - event topics, brokers, publishers, and queues use `shape queue`
+  - reports, documents, and generated files use `shape document`
+  - service/process containers may use `shape component`; generic systems can stay
+    `shape rectangle`
+- Add vendor or technology icons only when the technology has already been decided by
+  the BR/ADR/SAD, for example `gcp:cloud-storage`, `gcp:pub-sub`, or `tech:postgresql`.
+  Do not imply a product choice with an icon before that decision exists.
+- Use colors and borders only when they carry architectural meaning: ownership zone,
+  sensitivity, lifecycle status, publication path, certainty, or boundary semantics.
+  Avoid decorative per-component coloring.
+- Solution views are curated deliverables: use explicit `include` rules, avoid generic
+  root views such as `view landscape { include * }` for solution packages, and use
+  human-readable view IDs/names.
+- Keep root/common model files free of sample or demo-domain elements. LikeC4
+  auto-discovers all `*.c4` files, so unrelated sample elements can leak into broad
+  workspace views and generated artifacts.
 
 ---
 
@@ -228,14 +253,32 @@ ADR or change plan, then re-request gate approval.
 
 ### Phase 5. EXPORT
 
-Export diagrams to PNG:
+Export only the solution deliverable views to PNG. Use `-f <viewId>` filters for each
+SAD-referenced view; do not export generic workspace overview artifacts such as
+`index.*` or `landscape.*` unless they were intentionally curated and approved for this
+solution.
+
+Example:
 ```
-runCommand: npx likec4 export png model/ -o <solution>/output/ --flat
+runCommand: npx likec4 export png model/ -o <solution>/output/ --flat -f "solution001PropertyIntelligence" -f "propertyIntelligenceContainers"
 ```
 
 For Mermaid sources (optional, for embedding in SAD):
 ```
 runCommand: npx likec4 gen mermaid model/ --outdir <solution>/output/
+```
+
+The Mermaid generator may not support `-f` filters. After generation, remove any
+workspace-level or non-deliverable `.mmd` files, such as `index.mmd` or generic
+`landscape.mmd`, unless they are SAD-referenced curated deliverables.
+Mermaid shape mapping is approximate; use the LikeC4 browser or exported PNGs to verify
+that semantic shapes/icons are rendered as intended.
+
+After export, verify the output folder contains only solution deliverables and no
+unrelated sample/domain terms:
+```
+runCommand: ls -lh <solution>/output/
+runCommand: rg "<known-unrelated-sample-term>|<known-unrelated-domain-term>" <solution>/output/
 ```
 
 ---
@@ -280,7 +323,12 @@ Use `editFile` to update the SAD skeleton to rev 2:
 2. Verify every Accepted ADR is referenced in the SAD's Architecture Decisions section
 3. Verify the change plan rows are reflected in the model
 4. Update the SAD if needed using `editFile`
-5. Present a summary:
+5. Verify diagram hygiene:
+   - SAD references only curated solution-specific views
+   - Output folder has no stale `index.*` or generic `landscape.*` artifacts unless
+     intentionally approved
+   - No unrelated sample/demo-domain labels appear in the solution output
+6. Present a summary:
    - New/modified systems and containers
    - New relationships and data flows
    - Accepted ADRs with IDs
