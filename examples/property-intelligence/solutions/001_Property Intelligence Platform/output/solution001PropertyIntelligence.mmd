@@ -1,0 +1,77 @@
+---
+title: "Property Intelligence Platform - Solution View"
+---
+graph TB
+  CorporateTechnology@{ icon: "fa:user", shape: rounded, label: "Corporate Technology" }
+  DataStewards@{ icon: "fa:user", shape: rounded, label: "Data Stewards" }
+  PilotCountryOwners@{ icon: "fa:user", shape: rounded, label: "Pilot Country Business/Data Owners" }
+  SelectedPilotUsers@{ icon: "fa:user", shape: rounded, label: "Selected Pilot Users" }
+  ApprovedInternalConsumers@{ shape: rectangle, label: "Approved Internal Consumers" }
+  DataAiAnalyticsConsumers@{ icon: "fa:user", shape: rounded, label: "Data and AI Analytics Consumers" }
+  subgraph GcpDataAiFoundation["`GCP Data and AI Foundation`"]
+    GcpDataAiFoundation.CountryBoundaryControls@{ shape: rectangle, label: "Country Boundary Controls" }
+    GcpDataAiFoundation.DeliveryOperationsFoundation@{ shape: rectangle, label: "Delivery and Observability Foundation" }
+    GcpDataAiFoundation.CentralAggregatedMetricsDataset@{ shape: cylinder, label: "Central Aggregated Metrics Dataset" }
+  end
+  subgraph PropertyIntelligencePlatform["`Property Intelligence Platform`"]
+    PropertyIntelligencePlatform.PropertyProfileApi@{ shape: rectangle, label: "Property Profile API" }
+    PropertyIntelligencePlatform.CountryDatasetPublisher@{ shape: rectangle, label: "Country Dataset Publisher" }
+    PropertyIntelligencePlatform.EnrichmentOrchestrator@{ shape: rectangle, label: "Enrichment Orchestrator" }
+    PropertyIntelligencePlatform.PropertyIngestionService@{ shape: rectangle, label: "Property Ingestion Service" }
+    PropertyIntelligencePlatform.AggregatedMetricsPublisher@{ shape: rectangle, label: "Aggregated Metrics Publisher" }
+    PropertyIntelligencePlatform.EnrichmentCandidateStore@{ shape: disk, label: "Enrichment Candidate Store" }
+    PropertyIntelligencePlatform.StewardshipUi@{ shape: rounded, label: "Stewardship UI" }
+    PropertyIntelligencePlatform.PropertyMasterService@{ shape: rectangle, label: "Property Master Service" }
+    PropertyIntelligencePlatform.AuditLogStore@{ shape: disk, label: "Audit Log Store" }
+    PropertyIntelligencePlatform.PropertyMasterStore@{ shape: cylinder, label: "Property Master Store" }
+    PropertyIntelligencePlatform.DuplicateDetectionService@{ shape: rectangle, label: "Duplicate Detection Service" }
+    PropertyIntelligencePlatform.DataQualityLineageService@{ shape: rectangle, label: "Data Quality and Lineage Service" }
+    PropertyIntelligencePlatform.EventPublisher@{ shape: horizontal-cylinder, label: "Event Publisher" }
+  end
+  ExternalEnrichmentSources@{ shape: rectangle, label: "External/Public Enrichment Sources" }
+  FutureProductApplications@{ shape: rectangle, label: "Future Product Applications" }
+  DataStewards -. "`INF08. Steward review and approval 
+actions`" .-> PropertyIntelligencePlatform.StewardshipUi
+  SelectedPilotUsers -. "`INF09. Read-only property profile 
+validation`" .-> PropertyIntelligencePlatform.StewardshipUi
+  ApprovedInternalConsumers -. "`INF10. Property profile and enrichment 
+lookup`" .-> PropertyIntelligencePlatform.PropertyProfileApi
+  ApprovedInternalConsumers -. "`INF13. Governed country-local dataset 
+consumption`" .-> PropertyIntelligencePlatform.CountryDatasetPublisher
+  PropertyIntelligencePlatform.EnrichmentOrchestrator -. "`INF05. Enrichment request and response`" .-> ExternalEnrichmentSources
+  PropertyIntelligencePlatform.EventPublisher -. "`INF19. Governed lifecycle and quality 
+events`" .-> FutureProductApplications
+  PropertyIntelligencePlatform.PropertyIngestionService -. "`INF01. Curated property inputs for 
+canonical processing`" .-> PropertyIntelligencePlatform.PropertyMasterService
+  PropertyIntelligencePlatform.PropertyMasterService -. "`INF02. Canonical property master changes`" .-> PropertyIntelligencePlatform.PropertyMasterStore
+  PropertyIntelligencePlatform.PropertyMasterService -. "`INF03. Duplicate detection request`" .-> PropertyIntelligencePlatform.DuplicateDetectionService
+  PropertyIntelligencePlatform.PropertyMasterService -. "`INF04. Provenance, lineage, and quality 
+updates`" .-> PropertyIntelligencePlatform.DataQualityLineageService
+  PropertyIntelligencePlatform.PropertyMasterService -. "`INF17. Property lifecycle events`" .-> PropertyIntelligencePlatform.EventPublisher
+  PropertyIntelligencePlatform.StewardshipUi -. "`INF25. Steward approval, rejection, 
+merge, and retirement decisions`" .-> PropertyIntelligencePlatform.PropertyMasterService
+  PropertyIntelligencePlatform.PropertyProfileApi -. "`INF11. Approved property profile query`" .-> PropertyIntelligencePlatform.PropertyMasterService
+  PropertyIntelligencePlatform.CountryDatasetPublisher -. "`INF12. Approved country-local dataset 
+extract`" .-> PropertyIntelligencePlatform.PropertyMasterStore
+  PropertyIntelligencePlatform.AggregatedMetricsPublisher -. "`INF14. Aggregation input from approved 
+property records`" .-> PropertyIntelligencePlatform.PropertyMasterStore
+  PropertyIntelligencePlatform.DuplicateDetectionService -. "`INF24. Duplicate and merge candidates 
+for review`" .-> PropertyIntelligencePlatform.StewardshipUi
+  PropertyIntelligencePlatform.EnrichmentOrchestrator -. "`INF06. Enrichment candidates, 
+confidence, and processing outcomes`" .-> PropertyIntelligencePlatform.EnrichmentCandidateStore
+  PropertyIntelligencePlatform.EnrichmentOrchestrator -. "`INF07. Enrichment items requiring 
+steward review`" .-> PropertyIntelligencePlatform.StewardshipUi
+  PropertyIntelligencePlatform.EnrichmentOrchestrator -. "`INF18. Enrichment and quality events`" .-> PropertyIntelligencePlatform.EventPublisher
+  PropertyIntelligencePlatform.StewardshipUi -. "`INF20. Stewardship audit events`" .-> PropertyIntelligencePlatform.AuditLogStore
+  PropertyIntelligencePlatform.PropertyProfileApi -. "`INF21. Property profile API access audit 
+events`" .-> PropertyIntelligencePlatform.AuditLogStore
+  PropertyIntelligencePlatform.AggregatedMetricsPublisher -. "`INF22. Aggregated metric publication 
+audit events`" .-> PropertyIntelligencePlatform.AuditLogStore
+  DataAiAnalyticsConsumers -. "`INF16. Aggregated metrics consumption 
+from BigQuery`" .-> GcpDataAiFoundation.CentralAggregatedMetricsDataset
+  PropertyIntelligencePlatform.AggregatedMetricsPublisher -. "`INF15. Approved aggregated metrics 
+publication to BigQuery`" .-> GcpDataAiFoundation.CentralAggregatedMetricsDataset
+  GcpDataAiFoundation.CountryBoundaryControls -. "`INF23. Administrative, access, and 
+break-glass audit events`" .-> PropertyIntelligencePlatform.AuditLogStore
+  PropertyIntelligencePlatform -. "`Uses repeatable deployment, monitoring, 
+logging, and alerting foundation`" .-> GcpDataAiFoundation.DeliveryOperationsFoundation

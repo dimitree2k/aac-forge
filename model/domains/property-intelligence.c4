@@ -1,0 +1,101 @@
+// Property Intelligence Platform domain
+// Implements approved Stage B model for solution 001.
+
+model {
+  // === Stakeholders and consumers ===
+  corporateTechnology = person 'Corporate Technology' {
+    description 'Represents business requirements, prioritization, and acceptance expectations'
+  }
+  dataStewards = person 'Data Stewards' {
+    description 'Review property records, enrichment results, duplicates, merge candidates, and retirement decisions'
+  }
+  pilotCountryOwners = person 'Pilot Country Business/Data Owners' {
+    description 'Own pilot-country property data acceptance, access expectations, and approval of aggregated metric sharing'
+  }
+  dataAiAnalyticsConsumers = person 'Data and AI Analytics Consumers' {
+    description 'Consume approved aggregated property metrics in BigQuery'
+  }
+  selectedPilotUsers = person 'Selected Pilot Users' {
+    description 'Validate property profiles through read-only access'
+  }
+
+  // === External and adjacent systems ===
+  externalEnrichmentSources = system 'External/Public Enrichment Sources' {
+    description 'Approved external or public enrichment sources for address validation, geocoding, ownership or entity enrichment, and classification'
+  }
+  approvedInternalConsumers = system 'Approved Internal Consumers' {
+    description 'Internal applications, analytics users, data science teams, or future products authorized to consume country-boundary-aware property outputs'
+  }
+  futureProductApplications = system 'Future Product Applications' {
+    description 'Future Property Intelligence, Transactional Intelligence, or related applications that may consume approved APIs, datasets, or events'
+  }
+
+  // === Thin shared foundation ===
+  gcpDataAiFoundation = system 'GCP Data and AI Foundation' {
+    description 'Thin reusable foundation for country boundaries, delivery automation, operations, and approved aggregate analytics'
+
+    countryBoundaryControls = container 'Country Boundary Controls' 'Per-country project boundary, country-scoped IAM, service perimeter, and key boundary controls' 'GCP'
+    deliveryOperationsFoundation = container 'Delivery and Observability Foundation' 'CI/CD, IaC, logging, monitoring, and alerting capabilities reused by country deployments' 'GCP / CI/CD'
+    centralAggregatedMetricsDataset = container 'Central Aggregated Metrics Dataset' 'BigQuery dataset containing approved non-record-level property metrics only' 'BigQuery'
+  }
+
+  // === Property Intelligence Platform ===
+  propertyIntelligencePlatform = system 'Property Intelligence Platform' {
+    description 'Data and AI-operated platform for governed commercial property master data products'
+
+    propertyIngestionService = container 'Property Ingestion Service' 'Governed curated file and manual load intake for pilot-country property records' 'To be decided'
+    propertyMasterService = container 'Property Master Service' 'Owns canonical property identifiers, lifecycle states, approved attributes, merges, and retirements' 'To be decided'
+    propertyMasterStore = container 'Property Master Store' 'Country-local canonical store for property master records, provenance, lifecycle, and quality state' 'To be decided'
+    duplicateDetectionService = container 'Duplicate Detection Service' 'Identifies suspected duplicate properties and candidate merges for steward review' 'To be decided'
+    enrichmentOrchestrator = container 'Enrichment Orchestrator' 'Invokes approved enrichment sources, captures confidence and outcomes, retries failures, and routes approvals' 'To be decided'
+    enrichmentCandidateStore = container 'Enrichment Candidate Store' 'Stores submitted, enriched, candidate, rejected, and approved values separately where practical' 'To be decided'
+    dataQualityLineageService = container 'Data Quality and Lineage Service' 'Calculates quality indicators and records provenance and lineage for key property attributes' 'To be decided'
+    stewardshipUi = container 'Stewardship UI' 'Lightweight UI for steward review, approvals, merge decisions, retirement decisions, and read-only validation' 'To be decided'
+    propertyProfileApi = container 'Property Profile API' 'Country-boundary-aware API for approved consumers to retrieve property profile and enrichment information' 'To be decided'
+    eventPublisher = container 'Event Publisher' 'Publishes governed property lifecycle, enrichment, and data quality events' 'To be decided'
+    countryDatasetPublisher = container 'Country Dataset Publisher' 'Publishes governed record-level datasets inside the country boundary' 'To be decided'
+    aggregatedMetricsPublisher = container 'Aggregated Metrics Publisher' 'Publishes approved non-record-level property metrics to central analytics' 'To be decided'
+    auditLogStore = container 'Audit Log Store' 'Stores access, stewardship, enrichment approval, administrative, publication, and break-glass audit events' 'To be decided'
+  }
+
+  // === Stakeholder access ===
+  corporateTechnology -> propertyIntelligencePlatform 'Commissions MVP and reviews acceptance expectations' 'HTTPS'
+  pilotCountryOwners -> propertyIntelligencePlatform 'Approves pilot-country acceptance and aggregate sharing expectations' 'HTTPS'
+  dataStewards -> propertyIntelligencePlatform.stewardshipUi 'INF08. Steward review and approval actions' 'HTTPS'
+  selectedPilotUsers -> propertyIntelligencePlatform.stewardshipUi 'INF09. Read-only property profile validation' 'HTTPS'
+
+  // === Canonical property master processing ===
+  propertyIntelligencePlatform.propertyIngestionService -> propertyIntelligencePlatform.propertyMasterService 'INF01. Curated property inputs for canonical processing' 'REST/HTTPS'
+  propertyIntelligencePlatform.propertyMasterService -> propertyIntelligencePlatform.propertyMasterStore 'INF02. Canonical property master changes' 'TCP'
+  propertyIntelligencePlatform.propertyMasterService -> propertyIntelligencePlatform.duplicateDetectionService 'INF03. Duplicate detection request' 'REST/HTTPS'
+  propertyIntelligencePlatform.propertyMasterService -> propertyIntelligencePlatform.dataQualityLineageService 'INF04. Provenance, lineage, and quality updates' 'REST/HTTPS'
+
+  // === Enrichment and stewardship ===
+  propertyIntelligencePlatform.enrichmentOrchestrator -> externalEnrichmentSources 'INF05. Enrichment request and response' 'REST/HTTPS'
+  propertyIntelligencePlatform.enrichmentOrchestrator -> propertyIntelligencePlatform.enrichmentCandidateStore 'INF06. Enrichment candidates, confidence, and processing outcomes' 'TCP'
+  propertyIntelligencePlatform.enrichmentOrchestrator -> propertyIntelligencePlatform.stewardshipUi 'INF07. Enrichment items requiring steward review' 'REST/HTTPS'
+  propertyIntelligencePlatform.duplicateDetectionService -> propertyIntelligencePlatform.stewardshipUi 'INF24. Duplicate and merge candidates for review' 'REST/HTTPS'
+  propertyIntelligencePlatform.stewardshipUi -> propertyIntelligencePlatform.propertyMasterService 'INF25. Steward approval, rejection, merge, and retirement decisions' 'REST/HTTPS'
+
+  // === Consumer serving and publication ===
+  approvedInternalConsumers -> propertyIntelligencePlatform.propertyProfileApi 'INF10. Property profile and enrichment lookup' 'REST/HTTPS'
+  propertyIntelligencePlatform.propertyProfileApi -> propertyIntelligencePlatform.propertyMasterService 'INF11. Approved property profile query' 'REST/HTTPS'
+  propertyIntelligencePlatform.countryDatasetPublisher -> propertyIntelligencePlatform.propertyMasterStore 'INF12. Approved country-local dataset extract' 'TCP'
+  approvedInternalConsumers -> propertyIntelligencePlatform.countryDatasetPublisher 'INF13. Governed country-local dataset consumption' 'HTTPS'
+  propertyIntelligencePlatform.aggregatedMetricsPublisher -> propertyIntelligencePlatform.propertyMasterStore 'INF14. Aggregation input from approved property records' 'TCP'
+  propertyIntelligencePlatform.aggregatedMetricsPublisher -> gcpDataAiFoundation.centralAggregatedMetricsDataset 'INF15. Approved aggregated metrics publication to BigQuery' 'HTTPS'
+  dataAiAnalyticsConsumers -> gcpDataAiFoundation.centralAggregatedMetricsDataset 'INF16. Aggregated metrics consumption from BigQuery' 'HTTPS'
+
+  // === Events ===
+  propertyIntelligencePlatform.propertyMasterService -> propertyIntelligencePlatform.eventPublisher 'INF17. Property lifecycle events' 'Kafka'
+  propertyIntelligencePlatform.enrichmentOrchestrator -> propertyIntelligencePlatform.eventPublisher 'INF18. Enrichment and quality events' 'Kafka'
+  propertyIntelligencePlatform.eventPublisher -> futureProductApplications 'INF19. Governed lifecycle and quality events' 'Kafka'
+
+  // === Foundation boundary and operational security ===
+  propertyIntelligencePlatform -> gcpDataAiFoundation.countryBoundaryControls 'Uses approved country boundary controls for record-level data' 'HTTPS'
+  propertyIntelligencePlatform -> gcpDataAiFoundation.deliveryOperationsFoundation 'Uses repeatable deployment, monitoring, logging, and alerting foundation' 'HTTPS'
+  propertyIntelligencePlatform.stewardshipUi -> propertyIntelligencePlatform.auditLogStore 'INF20. Stewardship audit events' 'TCP'
+  propertyIntelligencePlatform.propertyProfileApi -> propertyIntelligencePlatform.auditLogStore 'INF21. Property profile API access audit events' 'TCP'
+  propertyIntelligencePlatform.aggregatedMetricsPublisher -> propertyIntelligencePlatform.auditLogStore 'INF22. Aggregated metric publication audit events' 'TCP'
+  gcpDataAiFoundation.countryBoundaryControls -> propertyIntelligencePlatform.auditLogStore 'INF23. Administrative, access, and break-glass audit events' 'HTTPS'
+}

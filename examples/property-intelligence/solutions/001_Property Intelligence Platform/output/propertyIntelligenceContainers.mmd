@@ -1,0 +1,43 @@
+---
+title: "Property Intelligence Platform - Containers"
+---
+graph TB
+  PropertyIntelligencePlatformPropertyIngestionService@{ shape: rectangle, label: "Property Ingestion Service" }
+  PropertyIntelligencePlatformPropertyProfileApi@{ shape: rectangle, label: "Property Profile API" }
+  PropertyIntelligencePlatformCountryDatasetPublisher@{ shape: rectangle, label: "Country Dataset Publisher" }
+  PropertyIntelligencePlatformAggregatedMetricsPublisher@{ shape: rectangle, label: "Aggregated Metrics Publisher" }
+  PropertyIntelligencePlatformEnrichmentOrchestrator@{ shape: rectangle, label: "Enrichment Orchestrator" }
+  PropertyIntelligencePlatformEnrichmentCandidateStore@{ shape: disk, label: "Enrichment Candidate Store" }
+  PropertyIntelligencePlatformStewardshipUi@{ shape: rounded, label: "Stewardship UI" }
+  PropertyIntelligencePlatformPropertyMasterService@{ shape: rectangle, label: "Property Master Service" }
+  PropertyIntelligencePlatformAuditLogStore@{ shape: disk, label: "Audit Log Store" }
+  PropertyIntelligencePlatformPropertyMasterStore@{ shape: cylinder, label: "Property Master Store" }
+  PropertyIntelligencePlatformDuplicateDetectionService@{ shape: rectangle, label: "Duplicate Detection Service" }
+  PropertyIntelligencePlatformDataQualityLineageService@{ shape: rectangle, label: "Data Quality and Lineage Service" }
+  PropertyIntelligencePlatformEventPublisher@{ shape: horizontal-cylinder, label: "Event Publisher" }
+  PropertyIntelligencePlatformPropertyIngestionService -. "`INF01. Curated property inputs for 
+canonical processing`" .-> PropertyIntelligencePlatformPropertyMasterService
+  PropertyIntelligencePlatformPropertyMasterService -. "`INF02. Canonical property master changes`" .-> PropertyIntelligencePlatformPropertyMasterStore
+  PropertyIntelligencePlatformPropertyMasterService -. "`INF03. Duplicate detection request`" .-> PropertyIntelligencePlatformDuplicateDetectionService
+  PropertyIntelligencePlatformPropertyMasterService -. "`INF04. Provenance, lineage, and quality 
+updates`" .-> PropertyIntelligencePlatformDataQualityLineageService
+  PropertyIntelligencePlatformPropertyMasterService -. "`INF17. Property lifecycle events`" .-> PropertyIntelligencePlatformEventPublisher
+  PropertyIntelligencePlatformStewardshipUi -. "`INF25. Steward approval, rejection, 
+merge, and retirement decisions`" .-> PropertyIntelligencePlatformPropertyMasterService
+  PropertyIntelligencePlatformPropertyProfileApi -. "`INF11. Approved property profile query`" .-> PropertyIntelligencePlatformPropertyMasterService
+  PropertyIntelligencePlatformCountryDatasetPublisher -. "`INF12. Approved country-local dataset 
+extract`" .-> PropertyIntelligencePlatformPropertyMasterStore
+  PropertyIntelligencePlatformAggregatedMetricsPublisher -. "`INF14. Aggregation input from approved 
+property records`" .-> PropertyIntelligencePlatformPropertyMasterStore
+  PropertyIntelligencePlatformDuplicateDetectionService -. "`INF24. Duplicate and merge candidates 
+for review`" .-> PropertyIntelligencePlatformStewardshipUi
+  PropertyIntelligencePlatformEnrichmentOrchestrator -. "`INF06. Enrichment candidates, 
+confidence, and processing outcomes`" .-> PropertyIntelligencePlatformEnrichmentCandidateStore
+  PropertyIntelligencePlatformEnrichmentOrchestrator -. "`INF07. Enrichment items requiring 
+steward review`" .-> PropertyIntelligencePlatformStewardshipUi
+  PropertyIntelligencePlatformEnrichmentOrchestrator -. "`INF18. Enrichment and quality events`" .-> PropertyIntelligencePlatformEventPublisher
+  PropertyIntelligencePlatformStewardshipUi -. "`INF20. Stewardship audit events`" .-> PropertyIntelligencePlatformAuditLogStore
+  PropertyIntelligencePlatformPropertyProfileApi -. "`INF21. Property profile API access audit 
+events`" .-> PropertyIntelligencePlatformAuditLogStore
+  PropertyIntelligencePlatformAggregatedMetricsPublisher -. "`INF22. Aggregated metric publication 
+audit events`" .-> PropertyIntelligencePlatformAuditLogStore

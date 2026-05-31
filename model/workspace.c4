@@ -3,13 +3,129 @@
 // Domain-specific elements go in domains/*.c4
 
 specification {
-  element person
+  element person {
+    style {
+      shape person
+    }
+  }
   element system
   element container
 }
 
 views {
-  view landscape {
-    include *
+  view propertyIntelligenceContainers {
+    title 'Property Intelligence Platform - Containers'
+
+    include
+      propertyIntelligencePlatform.*,
+      -> propertyIntelligencePlatform.* ->
+    style propertyIntelligencePlatform.propertyIngestionService {
+      shape component
+    }
+    style propertyIntelligencePlatform.propertyMasterService {
+      shape component
+    }
+    style propertyIntelligencePlatform.propertyMasterStore {
+      shape cylinder
+    }
+    style propertyIntelligencePlatform.duplicateDetectionService {
+      shape component
+    }
+    style propertyIntelligencePlatform.enrichmentOrchestrator {
+      shape component
+    }
+    style propertyIntelligencePlatform.enrichmentCandidateStore {
+      shape storage
+    }
+    style propertyIntelligencePlatform.dataQualityLineageService {
+      shape component
+    }
+    style propertyIntelligencePlatform.stewardshipUi {
+      shape browser
+    }
+    style propertyIntelligencePlatform.propertyProfileApi {
+      shape component
+    }
+    style propertyIntelligencePlatform.eventPublisher {
+      shape queue
+    }
+    style propertyIntelligencePlatform.countryDatasetPublisher {
+      shape component
+    }
+    style propertyIntelligencePlatform.aggregatedMetricsPublisher {
+      shape component
+    }
+    style propertyIntelligencePlatform.auditLogStore {
+      shape storage
+    }
+  }
+
+  view solution001PropertyIntelligence {
+    title 'Property Intelligence Platform - Solution View'
+
+    include
+      corporateTechnology,
+      dataStewards,
+      pilotCountryOwners,
+      dataAiAnalyticsConsumers,
+      selectedPilotUsers,
+      approvedInternalConsumers,
+      futureProductApplications,
+      externalEnrichmentSources,
+      propertyIntelligencePlatform.*,
+      gcpDataAiFoundation.*,
+      -> propertyIntelligencePlatform.* ->,
+      -> gcpDataAiFoundation.* ->
+    style gcpDataAiFoundation.countryBoundaryControls {
+      shape component
+    }
+    style gcpDataAiFoundation.deliveryOperationsFoundation {
+      shape component
+    }
+    style gcpDataAiFoundation.centralAggregatedMetricsDataset {
+      shape cylinder
+    }
+    style propertyIntelligencePlatform.propertyIngestionService {
+      shape component
+    }
+    style propertyIntelligencePlatform.propertyMasterService {
+      shape component
+    }
+    style propertyIntelligencePlatform.propertyMasterStore {
+      shape cylinder
+    }
+    style propertyIntelligencePlatform.duplicateDetectionService {
+      shape component
+    }
+    style propertyIntelligencePlatform.enrichmentOrchestrator {
+      shape component
+    }
+    style propertyIntelligencePlatform.enrichmentCandidateStore {
+      shape storage
+    }
+    style propertyIntelligencePlatform.dataQualityLineageService {
+      shape component
+    }
+    style propertyIntelligencePlatform.stewardshipUi {
+      shape browser
+    }
+    style propertyIntelligencePlatform.propertyProfileApi {
+      shape component
+    }
+    style propertyIntelligencePlatform.eventPublisher {
+      shape queue
+    }
+    style propertyIntelligencePlatform.countryDatasetPublisher {
+      shape component
+    }
+    style propertyIntelligencePlatform.aggregatedMetricsPublisher {
+      shape component
+    }
+    style propertyIntelligencePlatform.auditLogStore {
+      shape storage
+    }
+    style approvedInternalConsumers {
+      border none
+    }
   }
 }
