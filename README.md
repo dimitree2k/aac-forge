@@ -98,8 +98,7 @@ aac-forge/
 │   └── 001_.../                      # BR + ADRs + SAD + review output
 │
 ├── tests/
-│   ├── smoke-test.sh                 # End-to-end pipeline validation
-│   └── golden-files/                 # Golden-file test structure
+│   └── smoke-test.sh                 # End-to-end pipeline validation
 │
 ├── docs/
 │   └── SPECIFICATION.md              # Full fork specification

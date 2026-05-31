@@ -124,11 +124,6 @@ We retain the ability to export Structurizr-compatible DSL for teams that use it
 │                   └── SAD Review Automated Order Fulfillment.md
 │
 └── tests/
-    ├── golden-files/                 # Known inputs → expected outputs
-    │   └── 001_generate/
-    │       ├── input/
-    │       ├── expected-model.diff
-    │       └── expected-sad-sections.json
     └── smoke-test.sh                  # End-to-end pipeline test
 ```
 
@@ -138,7 +133,7 @@ We retain the ability to export Structurizr-compatible DSL for teams that use it
 - **`skills/` replaces `.claude/skills/`** — renamed and made provider-agnostic
 - **`adapters/` is new** — the LLM abstraction layer
 - **`examples/` contains** a real-world enterprise domain showcasing the full pipeline
-- **`tests/` is new** — golden-file tests for skill output validation
+- **`tests/` is new** — smoke tests for end-to-end pipeline validation
 
 ---
 
@@ -597,9 +592,9 @@ On merge to main, auto-export all diagrams and commit them to the repo (so SAD d
     file_pattern: 'solutions/*/output/*.png'
 ```
 
-### 10.3 Golden-File Tests
+### 10.3 Smoke Tests
 
-Each skill has a golden-file test: known BR input → expected model diff + expected SAD sections. These run in CI to catch skill regressions:
+The smoke test validates the current LikeC4 pipeline against the root model and tutorial example:
 
 ```bash
 tests/smoke-test.sh
@@ -615,32 +610,7 @@ tests/smoke-test.sh
 - `scripts/c4-to-structurizr.sh` — test round-trip conversion
 - `scripts/extract-labels.py` — test against known diagram outputs
 
-### 11.2 Golden-File Tests (Skill Output Validation)
-
-For each skill, a test directory with:
-
-```
-tests/golden-files/
-├── generate/
-│   ├── 001_order_fulfillment/
-│   │   ├── input/                      # BR document
-│   │   ├── initial-model/              # Starting model state
-│   │   ├── expected-model/             # Expected model after generation
-│   │   ├── expected-sad-sections.json  # Expected SAD section contents
-│   │   └── expected-review-sections.json
-│       └── ...
-└── review/
-    └── ...
-```
-
-The test runner:
-1. Copies initial-model to a temp workspace
-2. Runs the skill against the input
-3. Diffs the resulting model against expected-model
-4. Asserts SAD sections contain required fields
-5. Reports pass/fail
-
-### 11.3 End-to-End Smoke Test
+### 11.2 End-to-End Smoke Test
 
 ```bash
 #!/usr/bin/env bash

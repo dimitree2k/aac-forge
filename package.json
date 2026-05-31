@@ -17,7 +17,7 @@
     "export:mermaid": "likec4 gen mermaid model/ --outdir export/",
     "export:dot": "likec4 gen dot model/ --outdir export/",
     "format": "likec4 format model/",
-    "test": "echo \"No tests yet — see tests/ for future golden-file tests\""
+    "test": "bash tests/smoke-test.sh"
   },
   "keywords": ["architecture-as-code", "c4-model", "likec4", "llm"],
   "author": "Enterprise Architecture Team",
